@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+@theme {
+    /* Colors */
+    --color-black: rgba(0, 0, 0, 1);
+    --color-blue-100: rgba(223, 231, 236, 1);
+    --color-blue-300: rgba(188, 206, 217, 1);
+    --color-blue-350: rgba(99, 149, 184, 1);
+    --color-blue-400: rgba(113, 145, 165, 1);
+    --color-blue-800: rgba(48, 72, 89, 1);
+    --color-blue-950: rgba(21, 41, 56, 1);
+    --color-grey-100: rgba(242, 242, 242, 1);
+    --color-grey-50: rgba(252, 252, 252, 1);
+    --color-orange-300: rgba(255, 184, 74, 1);
+    --color-orange-400: rgba(253, 162, 20, 1);
+    --color-white: rgba(255, 255, 255, 1);
+
+    /* Font Family */
+    --font-primary: "Atkinson Hyperlegible", Helvetica, sans-serif;
+
+    /* Spacing */
+    --spacing-0: 0px;
+    --spacing-100: 8px;
+    --spacing-200: 16px;
+    --spacing-300: 24px;
+    --spacing-400: 32px;
+    --spacing-500: 40px;
+    --spacing-600: 48px;
+    --spacing-700: 56px;
+    --spacing-800: 64px;
+    --spacing-900: 72px;
+    --spacing-1000: 80px;
+
+    /* Animations */
+    --animate-fade-in: fade-in 1s var(--animation-delay, 0s) ease forwards;
+    --animate-fade-up: fade-up 1s var(--animation-delay, 0s) ease forwards;
+    --animate-marquee: marquee var(--duration) infinite linear;
+    --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+    --animate-shimmer: shimmer 8s infinite;
+    --animate-spin: spin 1s linear infinite;
+
+    @keyframes spin {
+        to {
+            transform: rotate(1turn);
+        }
+    }
+
+    @keyframes image-glow {
+        0% {
+            opacity: 0;
+            animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+        }
+
+        10% {
+            opacity: 0.7;
+            animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+        }
+
+        to {
+            opacity: 0.4;
+        }
+    }
+
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes fade-up {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes shimmer {
+
+        0%,
+        90%,
+        100% {
+            background-position: calc(-100% - var(--shimmer-width)) 0;
+        }
+
+        30%,
+        60% {
+            background-position: calc(100% + var(--shimmer-width)) 0;
+        }
+    }
+
+    @keyframes marquee {
+        0% {
+            transform: translate(0);
+        }
+
+        to {
+            transform: translateX(calc(-100% - var(--gap)));
+        }
+    }
+
+    @keyframes marquee-vertical {
+        0% {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(calc(-100% - var(--gap)));
+        }
+    }
+}
+
+@utility all-unset {
+    all: unset;
+}
+
+@utility sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ================================
+   Text Preset Utilities
+   ================================
+   All presets share: font-primary, weight 700,
+   style normal, line-height 125%.
+   Only font-size and letter-spacing differ.
+   ================================ */
+
+:root {
+    --text-1-size: 56px;
+    --text-2-size: 48px;
+    --text-3-size: 44px;
+    --text-4-size: 40px;
+    --text-5-size: 32px;
+    --text-6-size: 26px;
+    --text-7-size: 24px;
+    --text-8-size: 20px;
+    --text-9-size: 18px;
+    --text-10-size: 16px;
+    --text-11-size: 15px;
+    --text-12-size: 14px;
+    --text-13-size: 13px;
+    --text-13-spacing: 5px;
+}
+
+@utility text-preset-1 {
+    font-family: var(--font-primary);
+    font-size: var(--text-1-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-2 {
+    font-family: var(--font-primary);
+    font-size: var(--text-2-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-3 {
+    font-family: var(--font-primary);
+    font-size: var(--text-3-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-4 {
+    font-family: var(--font-primary);
+    font-size: var(--text-4-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-5 {
+    font-family: var(--font-primary);
+    font-size: var(--text-5-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-6 {
+    font-family: var(--font-primary);
+    font-size: var(--text-6-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-7 {
+    font-family: var(--font-primary);
+    font-size: var(--text-7-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-8 {
+    font-family: var(--font-primary);
+    font-size: var(--text-8-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-9 {
+    font-family: var(--font-primary);
+    font-size: var(--text-9-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-10 {
+    font-family: var(--font-primary);
+    font-size: var(--text-10-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-11 {
+    font-family: var(--font-primary);
+    font-size: var(--text-11-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-12 {
+    font-family: var(--font-primary);
+    font-size: var(--text-12-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 125%;
+}
+
+@utility text-preset-13 {
+    font-family: var(--font-primary);
+    font-size: var(--text-13-size);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: var(--text-13-spacing);
+    line-height: 125%;
+}
