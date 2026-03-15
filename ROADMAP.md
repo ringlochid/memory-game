@@ -50,24 +50,24 @@
 
 > *Speed skill: flex, grid, responsive containers — no visual polish yet.*
 
-- [ ] Start Game screen layout
-  - [ ] Centered card on dark background
-  - [ ] Title "memory" above card
-  - [ ] Vertical form layout: label + toggle group for each option
-  - [ ] Full-width "Start Game" button at bottom
-- [ ] Game screen layout
-  - [ ] Header: logo left, buttons right (desktop/tablet) or menu button (mobile)
-  - [ ] Game Board: centered grid with equal gaps
-    - [ ] 4×4 grid — larger circles
-    - [ ] 6×6 grid — smaller circles
-  - [ ] Stats Bar: horizontal row of stat boxes below grid
-    - [ ] Solo: 2 boxes (Time, Moves)
-    - [ ] Multiplayer: 2–4 player cards side-by-side
-- [ ] Mobile Menu overlay
-  - [ ] Full-screen semi-transparent backdrop
-  - [ ] Centered card with 3 stacked buttons
-- [ ] Game Over modal overlay
-  - [ ] Centered card with title, subtitle, stat rows, 2 action buttons
+- [x] Start Game screen layout
+  - [x] Centered card on dark background
+  - [x] Title "memory" above card
+  - [x] Vertical form layout: label + toggle group for each option
+  - [x] Full-width "Start Game" button at bottom
+- [x] Game screen layout
+  - [x] Header: logo left, buttons right (desktop/tablet) or menu button (mobile)
+  - [x] Game Board: centered grid with equal gaps
+    - [x] 4×4 grid — larger circles
+    - [x] 6×6 grid — smaller circles
+  - [x] Stats Bar: horizontal row of stat boxes below grid
+    - [x] Solo: 2 boxes (Time, Moves)
+    - [x] Multiplayer: 2–4 player cards side-by-side
+- [x] Mobile Menu overlay
+  - [x] Full-screen semi-transparent backdrop
+  - [x] Centered card with 3 stacked buttons
+- [x] Game Over modal overlay
+  - [x] Centered card with title, subtitle, stat rows, 2 action buttons
 - [ ] Responsive adjustments
   - [ ] Mobile (375px): single-column player stats, Menu button replaces Restart/New Game
   - [ ] Tablet (768px): multi-column stats, full buttons in header
@@ -79,16 +79,16 @@
 
 > *Speed skill: applying color, typography, spacing from design tokens without bikeshedding.*
 
-- [ ] Typography
-  - [ ] Font: Atkinson Hyperlegible (700 weight)
-  - [ ] Heading sizes per screen (title, modal heading, card numbers)
-- [ ] Color tokens
-  - [ ] Primary/Active: `#FDA214` (orange) — buttons, active player, badges
-  - [ ] Dark: `#152938` — face-down cards, headings, dark backgrounds
-  - [ ] Secondary: `#304859` — secondary text, secondary buttons
-  - [ ] Light: `#DFE7EC` — stat box backgrounds, inactive elements
-  - [ ] Background: `#FCFCFC` — page background
-  - [ ] Matched card: `#BCCED9` (grey-blue tint)
+- [x] Typography
+  - [x] Font: Atkinson Hyperlegible (700 weight)
+  - [x] Heading sizes per screen (title, modal heading, card numbers)
+- [x] Color tokens
+  - [x] Primary/Active: `#FDA214` (orange) — buttons, active player, badges
+  - [x] Dark: `#152938` — face-down cards, headings, dark backgrounds
+  - [x] Secondary: `#304859` — secondary text, secondary buttons
+  - [x] Light: `#DFE7EC` — stat box backgrounds, inactive elements
+  - [x] Background: `#FCFCFC` — page background
+  - [x] Matched card: `#BCCED9` (grey-blue tint)
 - [ ] Component-specific styling
   - [ ] Card circles: border-radius 50%, size varies by grid
   - [ ] Toggle buttons: pill-shaped, active = dark, inactive = light

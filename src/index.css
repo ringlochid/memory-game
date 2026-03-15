@@ -277,3 +277,114 @@
     letter-spacing: var(--text-13-spacing);
     line-height: 125%;
 }
+
+@utility text-preset-14 {
+    color: var(--colors-grey-50, #FCFCFC);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-15 {
+    color: var(--colors-blue-400, #7191A5);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 0.9375rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-16 {
+    color: var(--colors-blue-800, #304859);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-17 {
+    color: var(--colors-blue-800, #304859);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-18 {
+    color: var(--colors-grey-50, #FCFCFC);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-19 {
+    color: var(--colors-blue-400, #7191A5);
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-20 {
+    color: var(--colors-blue-800, #304859);
+    text-align: right;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-21 {
+    color: var(--colors-blue-950, #152938);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+@utility text-preset-22 {
+    color: var(--colors-blue-400, #7191A5);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    font-family: "Atkinson Hyperlegible";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 125%;
+}
+
+* {
+    box-sizing: border-box;
+}
