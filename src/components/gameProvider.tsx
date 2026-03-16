@@ -1,6 +1,7 @@
 import type { CardMeta, GameContextType, GameMeta, GameState, MultiplayerMeta, SoloMeta } from "../contexts/gameContext";
 import { useReducer } from "react";
 import { GameContext } from "../contexts/gameContext";
+import { getRandomIcons } from "../utils/icons";
 
 export interface SubmitGameFormProps {
     type: "submitGameForm";
@@ -24,16 +25,53 @@ export type GameAction = SubmitGameFormProps | SubmitGameResultProps | SubmitCar
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     const reducer = (state: GameState, action: GameAction) => {
         switch (action.type) {
-            case "submitGameForm":
-                return { ...state, gameMeta: action.gameMeta };
+
+            case "submitGameForm": {
+                const totalCards = action.gameMeta.gridSize * action.gameMeta.gridSize;
+                const pairsNeeded = totalCards / 2;
+
+                let symbols: string[] = [];
+                if (action.gameMeta.theme === "icons") {
+                    symbols = getRandomIcons(pairsNeeded);
+                } else {
+                    symbols = Array.from({ length: pairsNeeded }, (_, i) => String(i + 1));
+                }
+
+                const deck = [...symbols, ...symbols];
+
+                for (let i = deck.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [deck[i], deck[j]] = [deck[j], deck[i]];
+                }
+
+                const initialCards: CardMeta[] = deck.map((value, index) => ({
+                    id: index,
+                    theme: action.gameMeta.theme,
+                    value: value,
+                    isFlipped: false,
+                    isMatched: false,
+                }));
+
+                console.log(initialCards);
+
+                return {
+                    gameMeta: action.gameMeta,
+                    soloMeta: null,
+                    multiplayerMeta: null,
+                    cards: initialCards,
+                };
+            }
+
+            case "submitCard":
+                return { ...state, cards: action.cards };
+
             case "submitGameResult":
                 if (action.gameType === "solo") {
                     return { ...state, soloMeta: action.soloMeta };
                 } else {
                     return { ...state, multiplayerMeta: action.multiplayerMeta };
                 }
-            case "submitCard":
-                return { ...state, cards: action.cards };
+
             default:
                 throw new Error("unknown action type");
         }

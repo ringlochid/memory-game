@@ -1,24 +1,64 @@
+import { useGame } from "../contexts/useGame";
+import type { CardMeta } from "../contexts/gameContext";
 import type { JSX } from "react";
 
-const GridSizeClass: Record<string, string> = {
-    six: "grid grid-cols-6",
-    four: "grid grid-cols-4",
+const GridSizeClass: Record<number, string> = {
+    6: "grid grid-cols-6",
+    4: "grid grid-cols-4",
 }
 
 
-export function GameBtn({ id, isNumber }: { id: number, isNumber: boolean; }): JSX.Element {
+export function GameCard({ card, handleClick }: { card: CardMeta, handleClick: (id: number) => void }): JSX.Element {
+
+    let bgClass = "bg-blue-800 hover:bg-blue-350";
+    let contentOpacity = "opacity-0";
+
+    if (card.isFlipped && !card.isMatched) {
+        bgClass = "bg-orange-400";
+        contentOpacity = "opacity-100";
+    } else if (card.isMatched) {
+        bgClass = "bg-blue-300";
+        contentOpacity = "opacity-100";
+    }
+
     return (
-        <button id={`game-btn-${id}`} title="game button" className="w-full aspect-square bg-blue-800 rounded-full" />
+        <button
+            id={`game-btn-${card.id}`}
+            className={`w-full aspect-square rounded-full flex items-center justify-center transition-colors duration-200 ${bgClass}`}
+            onClick={() => handleClick(card.id)}
+            disabled={card.isMatched}
+            aria-label={`Card ${card.id}, ${card.isFlipped || card.isMatched ? `showing ${card.value}` : 'face down'}`}
+            aria-pressed={card.isFlipped || card.isMatched}
+        >
+            <div className={`transition-opacity duration-200 ${contentOpacity}`}>
+                {card.theme === 'numbers' ? (
+                    <span className="text-preset-8 md:text-preset-3 text-grey-50">
+                        {card.value}
+                    </span>
+                ) : (
+                    <div
+                        className={`w-6 h-6 md:w-10 md:h-10 icon-mask ${card.isFlipped && !card.isMatched ? 'bg-grey-50' : 'bg-grey-50'}`}
+                        style={{ '--icon-url': `url(${card.value})` } as React.CSSProperties}
+                    />
+                )}
+            </div>
+        </button>
     )
 }
 
-export function GameBoardContainer({ boardSize }: { boardSize: string; }): JSX.Element {
-    const size = boardSize === 'six' ? 6 : 4;
+export function GameBoardContainer(): JSX.Element {
+    const { gameState, dispatch } = useGame();
+    const { gridSize } = gameState.gameMeta;
+    const { cards } = gameState;
+
+    const handleCardClick = (id: number) => {
+        dispatch({ type: "submitCard", cards: gameState.cards.map((card) => card.id === id ? { ...card, isFlipped: true } : card) });
+    };
 
     return (
-        <div className={`${GridSizeClass[boardSize]} gap-3 w-full p-6 justify-start items-start`}>
-            {Array.from({ length: size * size }).map((_, idx) => (
-                <GameBtn key={idx} id={idx} isNumber={true} />
+        <div className={`${GridSizeClass[gridSize]} gap-3 md:gap-4 w-full justify-start items-start max-w-[532px] mx-auto`}>
+            {cards.map((card) => (
+                <GameCard key={card.id} card={card} handleClick={handleCardClick} />
             ))}
         </div>
     )

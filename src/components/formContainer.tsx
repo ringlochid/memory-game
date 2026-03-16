@@ -12,13 +12,11 @@ interface RadioOption {
 function RadioGroup({
     name,
     options,
-    defaultValue,
     currentValue,
     handleChange,
 }: {
     name: string;
     options: RadioOption[];
-    defaultValue?: string | number;
     currentValue?: string | number;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }): JSX.Element {
@@ -31,7 +29,6 @@ function RadioGroup({
                         type="radio"
                         name={name}
                         value={option.value}
-                        defaultChecked={option.value === defaultValue}
                         checked={option.value === currentValue}
                         className="peer sr-only"
                         onChange={handleChange}
@@ -68,9 +65,9 @@ function FormSection({
 export function FormContainer(): JSX.Element {
     const { gameState, dispatch } = useGame();
     const [gameSettings, setGameSettings] = useState<GameMeta>({
-        theme: "numbers",
-        playerCount: 1,
-        gridSize: 4,
+        theme: gameState.gameMeta.theme,
+        playerCount: gameState.gameMeta.playerCount,
+        gridSize: gameState.gameMeta.gridSize,
     });
     const navigate = useNavigate();
     const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,9 +81,8 @@ export function FormContainer(): JSX.Element {
     };
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        dispatch({ type: "submitGameForm", gameMeta: { theme: gameState.gameMeta.theme, playerCount: gameState.gameMeta.playerCount, gridSize: gameState.gameMeta.gridSize } });
+        dispatch({ type: "submitGameForm", gameMeta: gameSettings });
         navigate("/game");
-        console.log(gameState);
     };
     return (
         <main className="flex flex-col items-center justify-center min-h-screen bg-blue-950 p-300">
@@ -101,7 +97,6 @@ export function FormContainer(): JSX.Element {
                             { id: "theme-numbers", value: "numbers", label: "Numbers" },
                             { id: "theme-icons", value: "icons", label: "Icons" },
                         ]}
-                        defaultValue="numbers"
                         currentValue={gameSettings.theme}
                         handleChange={handleThemeChange}
                     />
@@ -116,7 +111,6 @@ export function FormContainer(): JSX.Element {
                             { id: "players-3", value: 3, label: "3" },
                             { id: "players-4", value: 4, label: "4" },
                         ]}
-                        defaultValue={1}
                         currentValue={gameSettings.playerCount}
                         handleChange={handlePlayerCountChange}
                     />
@@ -129,7 +123,6 @@ export function FormContainer(): JSX.Element {
                             { id: "grid-4x4", value: 4, label: "4x4" },
                             { id: "grid-6x6", value: 6, label: "6x6" },
                         ]}
-                        defaultValue={4}
                         currentValue={gameSettings.gridSize}
                         handleChange={handleGridSizeChange}
                     />
