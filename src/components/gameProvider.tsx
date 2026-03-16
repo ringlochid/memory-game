@@ -74,7 +74,6 @@ function initializeMultiplayerMeta(gameMeta: GameMeta): MultiplayerMeta {
             id: i,
             score: 0,
             rank: 1,
-            isTurn: i === 0,
             moves: 0,
         });
     }

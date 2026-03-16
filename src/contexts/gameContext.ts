@@ -20,7 +20,6 @@ export interface PlayerMeta {
   id: number;
   score: number;
   rank: number;
-  isTurn: boolean;
   moves: number;
 }
 

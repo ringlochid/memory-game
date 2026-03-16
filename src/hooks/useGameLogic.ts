@@ -13,20 +13,26 @@ export const useGameLogic = () => {
     const handleCurrentPlayerIDChange = useCallback((currentPlayerID: number) => {
         dispatch({ type: "submitCurrentPlayerIDChange", currentPlayerID });
     }, [dispatch]);
+    
+    const handleScoreUpdate = useCallback((playerId: number) => {
+        if (!multiplayerMeta) return;
+        dispatch({ type: "submitScoreUpdate", playerId });
+    }, [multiplayerMeta, dispatch]);
 
-    const handleEndTurn = useCallback(() => {
+    const handleEndTurn = useCallback((isMatch: boolean) => {
         if (playerCount === 1) {
             dispatch({ type: "submitMove", gameType: "solo", playerId: null });
         } else {
             if (!multiplayerMeta) return;
-            const currPlayerId = multiplayerMeta.players.find((player) => player.isTurn)?.id;
-            if (currPlayerId === undefined) return;
-            const nextPlayerId = multiplayerMeta.players.find((player) => player.id === (currPlayerId + 1) % playerCount)?.id;
-            if (nextPlayerId === undefined) return;
+            const currPlayerId = multiplayerMeta.currentPlayerID;
+            const nextPlayerId = (currPlayerId + 1) % playerCount;
+            if (isMatch) {
+                handleScoreUpdate(currPlayerId);
+            }
             handleCurrentPlayerIDChange(nextPlayerId)
             dispatch({ type: "submitMove", gameType: "multiplayer", playerId: currPlayerId });
         }
-    }, [playerCount, multiplayerMeta, handleCurrentPlayerIDChange, dispatch]);
+    }, [playerCount, multiplayerMeta, handleScoreUpdate, handleCurrentPlayerIDChange, dispatch]);
 
     const dispatchFlipCard = useCallback((cardId: number, isFlipped: boolean) => {
          const updatedCards = cards.map(card => 
@@ -34,11 +40,6 @@ export const useGameLogic = () => {
         );
         dispatch({ type: "submitCard", cards: updatedCards });
     }, [cards, dispatch]);
-
-    const handleScoreUpdate = useCallback((playerId: number) => {
-        if (!multiplayerMeta) return;
-        dispatch({ type: "submitScoreUpdate", playerId });
-    }, [multiplayerMeta, dispatch]);
 
 
     const handleCardClick = useCallback((id: number) => {
@@ -79,10 +80,10 @@ export const useGameLogic = () => {
                     );
 
                     dispatch({ type: "submitCard", cards: finalSync });
-                    handleEndTurn();
+                    handleEndTurn(true);
                     setFlippedIndices([]);
                     setIsResolving(false);
-                }, 800);
+                }, 1000);
 
             } else {
                 setTimeout(() => {
@@ -92,10 +93,10 @@ export const useGameLogic = () => {
                             : c
                     );
                     dispatch({ type: "submitCard", cards: resetCards });
-                    handleEndTurn();
+                    handleEndTurn(false);
                     setFlippedIndices([]);
                     setIsResolving(false);
-                }, 800); 
+                }, 1000); 
             }
         }
     }, [cards, flippedIndices, isResolving, dispatchFlipCard, handleEndTurn, dispatch]);
