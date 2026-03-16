@@ -21,6 +21,7 @@ export interface PlayerMeta {
   score: number;
   rank: number;
   isTurn: boolean;
+  moves: number;
 }
 
 export interface MultiplayerMeta {

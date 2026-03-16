@@ -1,3 +1,4 @@
+import { useGameLogic } from "../hooks/useGameLogic";
 import { useGame } from "../contexts/useGame";
 import type { CardMeta } from "../contexts/gameContext";
 import type { JSX } from "react";
@@ -46,29 +47,13 @@ export function GameCard({ card, handleClick }: { card: CardMeta, handleClick: (
     )
 }
 
-export function GameBoardContainer(): JSX.Element {
-    const { gameState, dispatch } = useGame();
-    const { gridSize } = gameState.gameMeta;
-    const { cards } = gameState;
 
-    const handleCardClick = (id: number) => {
-        const card = cards.find((card) => card.id === id);
-        const pairCard = cards.find((pairCard) => pairCard.value === card?.value && pairCard.id !== id);
-        if (!card || !pairCard) return;
-        if (card.isFlipped) {
-            return;
-        }
-        if (pairCard.isFlipped) {
-            pairCard.isMatched = true;
-            card.isMatched = true;
-        }
-        else {
-            card.isFlipped = true;
-        }
-        let updatedCards = gameState.cards.map((card) => card.id === id ? { ...card } : card);
-        updatedCards = updatedCards.map((card) => card.id === pairCard.id ? { ...pairCard } : card);
-        dispatch({ type: "submitCard", cards: updatedCards });
-    };
+export function GameBoardContainer(): JSX.Element {
+    const { gameState } = useGame();
+    const { gameMeta, cards } = gameState;
+    const { gridSize } = gameMeta;
+
+    const { handleCardClick } = useGameLogic();
 
     return (
         <div className={`${GridSizeClass[gridSize]} gap-3 md:gap-4 w-full justify-start items-start max-w-[532px] mx-auto`}>
