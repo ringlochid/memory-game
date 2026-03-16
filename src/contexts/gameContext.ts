@@ -26,6 +26,7 @@ export interface PlayerMeta {
 
 export interface MultiplayerMeta {
   players: PlayerMeta[];
+  currentPlayerID: number;
   maxScore: number;
 }
 

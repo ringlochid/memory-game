@@ -1,4 +1,3 @@
-import { useGameLogic } from "../hooks/useGameLogic";
 import { useGame } from "../contexts/useGame";
 import type { CardMeta } from "../contexts/gameContext";
 import type { JSX } from "react";
@@ -48,12 +47,10 @@ export function GameCard({ card, handleClick }: { card: CardMeta, handleClick: (
 }
 
 
-export function GameBoardContainer(): JSX.Element {
+export function GameBoardContainer({ handleCardClick }: { handleCardClick: (id: number) => void }): JSX.Element {
     const { gameState } = useGame();
     const { gameMeta, cards } = gameState;
     const { gridSize } = gameMeta;
-
-    const { handleCardClick } = useGameLogic();
 
     return (
         <div className={`${GridSizeClass[gridSize]} gap-3 md:gap-4 w-full justify-start items-start max-w-[532px] mx-auto`}>

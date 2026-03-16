@@ -19,7 +19,17 @@ export interface SubmitMoveProps {
     playerId: number | null;
 }
 
-export type GameAction = SubmitGameFormProps | SubmitCardProps | SubmitMoveProps;
+export interface SubmitCurrentPlayerIDChangeProps {
+    type: "submitCurrentPlayerIDChange";
+    currentPlayerID: number;
+}
+
+export interface SubmitScoreUpdateProps {
+    type: "submitScoreUpdate";
+    playerId: number;
+}
+
+export type GameAction = SubmitGameFormProps | SubmitCardProps | SubmitMoveProps | SubmitCurrentPlayerIDChangeProps | SubmitScoreUpdateProps;
 
 function initializeCards(gameMeta: GameMeta): CardMeta[] {
     const totalCards = gameMeta.gridSize * gameMeta.gridSize;
@@ -70,7 +80,8 @@ function initializeMultiplayerMeta(gameMeta: GameMeta): MultiplayerMeta {
     }
     return {
         players,
-        maxScore: 0, // This could be calculated based on grid size if required
+        maxScore: 0,
+        currentPlayerID: 0,
     };
 }
 
@@ -102,11 +113,21 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             }
 
+            case "submitCurrentPlayerIDChange": {
+                if (!state.multiplayerMeta) return state;
+                return { ...state, multiplayerMeta: { ...state.multiplayerMeta, currentPlayerID: action.currentPlayerID } };
+            }
+
+            case "submitScoreUpdate": {
+                if (!state.multiplayerMeta) return state;
+                return { ...state, multiplayerMeta: { ...state.multiplayerMeta, players: state.multiplayerMeta.players.map((player) => player.id === action.playerId ? { ...player, score: player.score + 1 } : player) } };
+            }
+
             default:
                 throw new Error("unknown action type");
         }
     }
-    
+
     const [gameState, dispatch] = useReducer(reducer, {
         gameMeta: {
             theme: "numbers",
