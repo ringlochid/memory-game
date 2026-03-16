@@ -38,7 +38,7 @@ export function GameCard({ card, handleClick }: { card: CardMeta, handleClick: (
                 ) : (
                     <div
                         className={`w-6 h-6 md:w-10 md:h-10 icon-mask ${card.isFlipped && !card.isMatched ? 'bg-grey-50' : 'bg-grey-50'}`}
-                        style={{ '--icon-url': `url(${card.value})` } as React.CSSProperties}
+                        style={{ '--icon-url': `url("${card.value}")` } as React.CSSProperties}
                     />
                 )}
             </div>
@@ -52,7 +52,22 @@ export function GameBoardContainer(): JSX.Element {
     const { cards } = gameState;
 
     const handleCardClick = (id: number) => {
-        dispatch({ type: "submitCard", cards: gameState.cards.map((card) => card.id === id ? { ...card, isFlipped: true } : card) });
+        const card = cards.find((card) => card.id === id);
+        const pairCard = cards.find((pairCard) => pairCard.value === card?.value && pairCard.id !== id);
+        if (!card || !pairCard) return;
+        if (card.isFlipped) {
+            return;
+        }
+        if (pairCard.isFlipped) {
+            pairCard.isMatched = true;
+            card.isMatched = true;
+        }
+        else {
+            card.isFlipped = true;
+        }
+        let updatedCards = gameState.cards.map((card) => card.id === id ? { ...card } : card);
+        updatedCards = updatedCards.map((card) => card.id === pairCard.id ? { ...pairCard } : card);
+        dispatch({ type: "submitCard", cards: updatedCards });
     };
 
     return (
