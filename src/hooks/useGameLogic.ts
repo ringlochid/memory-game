@@ -1,14 +1,32 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useGame } from '../contexts/useGame';
+import { useNavigate } from 'react-router';
 
 export const useGameLogic = () => {
     const { gameState, dispatch } = useGame();
     const { cards, gameMeta, multiplayerMeta } = gameState;
-    const { playerCount } = gameMeta;
+    const { playerCount, isGameOver } = gameMeta;
 
     const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
     const [matchedIndices, setMatchedIndices] = useState<number[]>([]); // for check game over
     const [isResolving, setIsResolving] = useState(false);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (matchedIndices.length === cards.length && cards.length > 0) {
+            dispatch({ type: "submitGameOver" });
+            console.log("game over");
+        }
+    }, [matchedIndices, cards, dispatch]);
+
+    useEffect(() => {
+        if (isGameOver) {
+            setTimeout(() => {
+                navigate("/result");
+            }, 800);
+        }
+    }, [isGameOver, navigate]);
 
     const handleCurrentPlayerIDChange = useCallback((currentPlayerID: number) => {
         dispatch({ type: "submitCurrentPlayerIDChange", currentPlayerID });
@@ -79,6 +97,9 @@ export const useGameLogic = () => {
                             : c
                     );
 
+                    setMatchedIndices([...matchedIndices, firstCardId, secondCardId]);
+                    console.log("matchedIndices", matchedIndices);
+
                     dispatch({ type: "submitCard", cards: finalSync });
                     handleEndTurn(true);
                     setFlippedIndices([]);
@@ -99,7 +120,7 @@ export const useGameLogic = () => {
                 }, 1000); 
             }
         }
-    }, [cards, flippedIndices, isResolving, dispatchFlipCard, handleEndTurn, dispatch]);
+    }, [cards, flippedIndices, isResolving, matchedIndices, dispatchFlipCard, handleEndTurn, dispatch]);
 
 
     return {

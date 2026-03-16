@@ -9,6 +9,7 @@ export interface GameMeta {
   theme: Theme;
   playerCount: number;
   gridSize: GridSize;
+  isGameOver: boolean;
 }
 
 export interface SoloMeta {

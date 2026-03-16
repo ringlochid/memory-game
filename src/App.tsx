@@ -15,6 +15,10 @@ const router = createBrowserRouter([
     path: "/game",
     element: <GamePage />
   },
+  {
+    path: "/result",
+    element: <ResultContainer />
+  },
   // for test components, not real router
   {
     path: "/test",

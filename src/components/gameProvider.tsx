@@ -2,6 +2,7 @@ import type { CardMeta, GameContextType, GameMeta, GameState, MultiplayerMeta, S
 import { useReducer } from "react";
 import { GameContext } from "../contexts/gameContext";
 import { getRandomIcons } from "../utils/icons";
+import { useNavigate } from "react-router";
 
 export interface SubmitGameFormProps {
     type: "submitGameForm";
@@ -29,7 +30,11 @@ export interface SubmitScoreUpdateProps {
     playerId: number;
 }
 
-export type GameAction = SubmitGameFormProps | SubmitCardProps | SubmitMoveProps | SubmitCurrentPlayerIDChangeProps | SubmitScoreUpdateProps;
+export interface SubmitGameOverProps {
+    type: "submitGameOver";
+}
+
+export type GameAction = SubmitGameFormProps | SubmitCardProps | SubmitMoveProps | SubmitCurrentPlayerIDChangeProps | SubmitScoreUpdateProps | SubmitGameOverProps;
 
 function initializeCards(gameMeta: GameMeta): CardMeta[] {
     const totalCards = gameMeta.gridSize * gameMeta.gridSize;
@@ -122,6 +127,10 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
                 return { ...state, multiplayerMeta: { ...state.multiplayerMeta, players: state.multiplayerMeta.players.map((player) => player.id === action.playerId ? { ...player, score: player.score + 1 } : player) } };
             }
 
+            case "submitGameOver": {
+                return { ...state, gameMeta: { ...state.gameMeta, isGameOver: true } };
+            }
+
             default:
                 throw new Error("unknown action type");
         }
@@ -132,6 +141,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
             theme: "numbers",
             playerCount: 1,
             gridSize: 4,
+            isGameOver: false,
         },
         soloMeta: null,
         multiplayerMeta: null,
@@ -149,4 +159,3 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         </GameContext.Provider>
     );
 };
-
