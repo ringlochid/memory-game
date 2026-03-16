@@ -4,6 +4,7 @@ import { GamePage } from "./pages/gamePage";
 import { MenuContainer } from "./components/gameMenuModal";
 import { ResultContainer } from "./components/gameResultModal";
 import { createBrowserRouter, RouterProvider } from "react-router"
+import { GameProvider } from "./components/gameProvider";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <GameProvider>
+        <RouterProvider router={router} />
+      </GameProvider>
     </>
   )
 }

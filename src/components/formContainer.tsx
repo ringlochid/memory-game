@@ -1,8 +1,11 @@
-import type { JSX, ReactNode } from "react";
+import { useState, type JSX, type ReactNode } from "react";
+import { useGame } from "../contexts/useGame";
+import type { GameMeta } from "../contexts/gameContext";
+import { useNavigate } from "react-router";
 
 interface RadioOption {
     id: string;
-    value: string;
+    value: string | number;
     label: string;
 }
 
@@ -10,13 +13,17 @@ function RadioGroup({
     name,
     options,
     defaultValue,
+    currentValue,
+    handleChange,
 }: {
     name: string;
     options: RadioOption[];
-    defaultValue?: string;
+    defaultValue?: string | number;
+    currentValue?: string | number;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }): JSX.Element {
     return (
-        <div className="flex gap-[11px] md:gap-300">
+        <div className="flex gap-2.75 md:gap-300">
             {options.map((option) => (
                 <div key={option.id} className="flex-1">
                     <input
@@ -25,7 +32,9 @@ function RadioGroup({
                         name={name}
                         value={option.value}
                         defaultChecked={option.value === defaultValue}
+                        checked={option.value === currentValue}
                         className="peer sr-only"
+                        onChange={handleChange}
                     />
                     <label
                         htmlFor={option.id}
@@ -57,12 +66,34 @@ function FormSection({
 }
 
 export function FormContainer(): JSX.Element {
+    const { gameState, dispatch } = useGame();
+    const [gameSettings, setGameSettings] = useState<GameMeta>({
+        theme: "numbers",
+        playerCount: 1,
+        gridSize: 4,
+    });
+    const navigate = useNavigate();
+    const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setGameSettings({ ...gameSettings, theme: e.target.value as "numbers" | "icons" });
+    };
+    const handlePlayerCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setGameSettings({ ...gameSettings, playerCount: Number(e.target.value) });
+    };
+    const handleGridSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setGameSettings({ ...gameSettings, gridSize: Number(e.target.value) });
+    };
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        dispatch({ type: "submitGameForm", gameMeta: { theme: gameState.gameMeta.theme, playerCount: gameState.gameMeta.playerCount, gridSize: gameState.gameMeta.gridSize } });
+        navigate("/game");
+        console.log(gameState);
+    };
     return (
         <main className="flex flex-col items-center justify-center min-h-screen bg-blue-950 p-300">
             <h1 className="text-preset-5 md:text-preset-4 text-grey-50 mb-600 md:mb-1000">
                 memory
             </h1>
-            <form className="bg-grey-50 rounded-[10px] md:rounded-[20px] p-300 md:p-700 w-[327px] md:w-[654px] max-w-full flex flex-col gap-300 md:gap-400">
+            <form onSubmit={handleSubmit} className="bg-grey-50 rounded-[10px] md:rounded-[20px] p-300 md:p-700 w-[327px] md:w-[654px] max-w-full flex flex-col gap-300 md:gap-400">
                 <FormSection label="Select Theme">
                     <RadioGroup
                         name="theme"
@@ -71,6 +102,8 @@ export function FormContainer(): JSX.Element {
                             { id: "theme-icons", value: "icons", label: "Icons" },
                         ]}
                         defaultValue="numbers"
+                        currentValue={gameSettings.theme}
+                        handleChange={handleThemeChange}
                     />
                 </FormSection>
 
@@ -78,12 +111,14 @@ export function FormContainer(): JSX.Element {
                     <RadioGroup
                         name="players"
                         options={[
-                            { id: "players-1", value: "1", label: "1" },
-                            { id: "players-2", value: "2", label: "2" },
-                            { id: "players-3", value: "3", label: "3" },
-                            { id: "players-4", value: "4", label: "4" },
+                            { id: "players-1", value: 1, label: "1" },
+                            { id: "players-2", value: 2, label: "2" },
+                            { id: "players-3", value: 3, label: "3" },
+                            { id: "players-4", value: 4, label: "4" },
                         ]}
-                        defaultValue="1"
+                        defaultValue={1}
+                        currentValue={gameSettings.playerCount}
+                        handleChange={handlePlayerCountChange}
                     />
                 </FormSection>
 
@@ -91,10 +126,12 @@ export function FormContainer(): JSX.Element {
                     <RadioGroup
                         name="grid"
                         options={[
-                            { id: "grid-4x4", value: "4x4", label: "4x4" },
-                            { id: "grid-6x6", value: "6x6", label: "6x6" },
+                            { id: "grid-4x4", value: 4, label: "4x4" },
+                            { id: "grid-6x6", value: 6, label: "6x6" },
                         ]}
-                        defaultValue="4x4"
+                        defaultValue={4}
+                        currentValue={gameSettings.gridSize}
+                        handleChange={handleGridSizeChange}
                     />
                 </FormSection>
 
