@@ -9,7 +9,7 @@ import { useGame } from "../contexts/useGame";
 export function GamePage(): JSX.Element {
     const { gameState } = useGame();
     const { cards } = gameState;
-    const { handleCardClick } = useGameLogic();
+    const { handleCardClick, timeElapsed } = useGameLogic();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export function GamePage(): JSX.Element {
         <div className="flex flex-col items-center justify-between h-screen p-6">
             <GameHeaderContainer />
             <GameBoardContainer handleCardClick={handleCardClick} />
-            <GameFooterContainer />
+            <GameFooterContainer timeElapsed={timeElapsed} />
         </div>
     )
 }

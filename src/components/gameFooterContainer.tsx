@@ -11,9 +11,14 @@ export function FooterSection({ name, value, isHighlighted }: { name: string, va
     )
 }
 
-export function GameFooterContainer(): JSX.Element {
+export function GameFooterContainer({ timeElapsed }: { timeElapsed: number }): JSX.Element {
     const { gameState } = useGame();
     const { gameMeta, multiplayerMeta, soloMeta } = gameState;
+    const minutes = Math.floor(timeElapsed / 60);
+    const seconds = timeElapsed % 60;
+
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedSeconds = String(seconds).padStart(2, '0');
 
     if (gameMeta.playerCount > 1 && multiplayerMeta) {
         return (
@@ -28,7 +33,7 @@ export function GameFooterContainer(): JSX.Element {
     if (gameMeta.playerCount === 1 && soloMeta) {
         return (
             <footer className="w-full flex gap-6 p-6">
-                <FooterSection name="Timer" value={soloMeta.timeElapsed.toString()} isHighlighted={false} />
+                <FooterSection name="Time" value={`${formattedMinutes}:${formattedSeconds}`} isHighlighted={false} />
                 <FooterSection name="Moves" value={soloMeta.movesTaken.toString()} isHighlighted={false} />
             </footer>
         )

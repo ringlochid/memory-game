@@ -12,6 +12,7 @@ export interface SubmitTurnProps {
     type: "submitTurn";
     cards: CardMeta[];
     movesTakenInc: number; // for solo logic
+    timeElapsed: number; // for solo logic
     scoreIncPlayerId: number | null; // which player just scored a point
     nextPlayerId: number | null; // pass if turn advances
 }
@@ -76,6 +77,11 @@ function initializeMultiplayerMeta(gameMeta: GameMeta): MultiplayerMeta {
 
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
+    useEffect(() => {
+        console.log("GameProvider MOUNTED");
+        return () => console.log("GameProvider UNMOUNTED");
+    }, []);
+
     const reducer = (state: GameState, action: GameAction) => {
         switch (action.type) {
 
@@ -93,7 +99,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
                     ...state,
                     cards: action.cards,
                     soloMeta: state.soloMeta
-                        ? { ...state.soloMeta, movesTaken: state.soloMeta.movesTaken + action.movesTakenInc }
+                        ? { ...state.soloMeta, movesTaken: state.soloMeta.movesTaken + action.movesTakenInc, timeElapsed: action.timeElapsed }
                         : null,
                     multiplayerMeta: state.multiplayerMeta
                         ? {

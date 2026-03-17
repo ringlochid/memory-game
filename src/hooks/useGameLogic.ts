@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useGame } from '../contexts/useGame';
 import { useNavigate } from 'react-router';
+import { useTimer } from './useTimer';
 
 export const useGameLogic = () => {
     const { gameState, dispatch } = useGame();
@@ -9,12 +10,11 @@ export const useGameLogic = () => {
 
     const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
     const [isResolving, setIsResolving] = useState(false);
+    const timeElapsed = useTimer(); 
 
     const isGameOver = cards.length > 0 && cards.every(c => c.isMatched);
     
     const navigate = useNavigate();
-
-
 
     useEffect(() => {
         if (isGameOver) {
@@ -32,10 +32,11 @@ export const useGameLogic = () => {
             type: "submitTurn", 
             cards: updatedCards,
             movesTakenInc: 0,
+            timeElapsed: timeElapsed,
             scoreIncPlayerId: null,
             nextPlayerId: null,
         });
-    }, [cards, dispatch]);
+    }, [cards, dispatch, timeElapsed]);
 
 
     const handleCardClick = useCallback((id: number) => {
@@ -73,6 +74,7 @@ export const useGameLogic = () => {
                         type: "submitTurn", 
                         cards: matchedCards,
                         movesTakenInc: 1, // solo move increments on resolution
+                        timeElapsed: timeElapsed, // solo mode
                         scoreIncPlayerId: multiplayerMeta ? multiplayerMeta.currentPlayerID : null, // scored a point
                         nextPlayerId: multiplayerMeta ? multiplayerMeta.currentPlayerID : null // keeps turn
                     });
@@ -95,6 +97,7 @@ export const useGameLogic = () => {
                         type: "submitTurn", 
                         cards: resetCards,
                         movesTakenInc: 1,
+                        timeElapsed: timeElapsed, // solo mode
                         scoreIncPlayerId: null, // no point
                         nextPlayerId // advance turn
                     });
@@ -104,11 +107,12 @@ export const useGameLogic = () => {
                 }, 1000); 
             }
         }
-    }, [cards, flippedIndices, isResolving, multiplayerMeta, playerCount, dispatchFlipCard, dispatch]);
+    }, [cards, flippedIndices, isResolving, multiplayerMeta, playerCount, timeElapsed, dispatchFlipCard, dispatch]);
 
 
     return {
         handleCardClick,
         isResolving, 
+        timeElapsed,
     };
 };
