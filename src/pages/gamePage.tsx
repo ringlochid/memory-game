@@ -5,11 +5,12 @@ import { GameHeaderContainer } from "../components/gameHeaderContainer";
 import { useGameLogic } from "../hooks/useGameLogic";
 import { useNavigate } from "react-router";
 import { useGame } from "../contexts/useGame";
+import { ResultContainer } from "../components/gameResultModal";
 
 export function GamePage(): JSX.Element {
     const { gameState } = useGame();
     const { cards } = gameState;
-    const { handleCardClick, timeElapsed } = useGameLogic();
+    const { handleCardClick, timeElapsed, isGameOver } = useGameLogic();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,6 +24,7 @@ export function GamePage(): JSX.Element {
             <GameHeaderContainer />
             <GameBoardContainer handleCardClick={handleCardClick} />
             <GameFooterContainer timeElapsed={timeElapsed} />
+            {isGameOver && <ResultContainer />}
         </div>
     )
 }

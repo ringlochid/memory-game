@@ -29,8 +29,8 @@ export function ResultContainer(): JSX.Element {
         const formattedMinutes = String(minutes).padStart(2, '0');
         const formattedSeconds = String(seconds).padStart(2, '0');
         return (
-            <div className="relative h-svh w-svw grid place-items-center">
-                <div className="absolute z-100 w-81.75 flex flex-col bg-white p-6 gap-6 rounded-[0.625rem]">
+            <div className="fixed inset-0 z-50 grid place-items-center bg-black/50">
+                <div className="z-100 w-81.75 flex flex-col bg-white p-6 gap-6 rounded-[0.625rem]">
                     <div className="flex flex-col gap-2">
                         <h1 className="text-preset-21">you did it</h1>
                         <p className="text-preset-22">Game over! Here’s how you got on…</p>
@@ -48,16 +48,20 @@ export function ResultContainer(): JSX.Element {
         )
     }
     if (multiplayerMeta) {
+        const rankedPlayers = multiplayerMeta.players.sort((a, b) => b.score - a.score);
+        const highestScore = rankedPlayers[0].score;
+        const winningPlayer = rankedPlayers.filter(player => player.score === highestScore);
         return (
-            <div className="relative h-svh w-svw grid place-items-center">
-                <div className="absolute z-100 w-81.75 flex flex-col bg-white p-6 gap-6 rounded-[0.625rem]">
+            <div className="fixed inset-0 z-50 grid place-items-center bg-black/50">
+                <div className="z-100 w-81.75 flex flex-col bg-white p-6 gap-6 rounded-[0.625rem]">
                     <div className="flex flex-col gap-2">
-                        <h1 className="text-preset-21">you did it</h1>
-                        <p className="text-preset-22">Game over! Here’s how you got on…</p>
+                        <h1 className="text-preset-21">{winningPlayer.length > 1 ? "It's a tie!" : `Player ${winningPlayer[0].id + 1} Wins!`}</h1>
+                        <p className="text-preset-22">Game over! Here are the results…</p>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <ResultItem name="time elapsed" value="1:30" isHighlighted={false} />
-                        <ResultItem name="moves taken" value="12" isHighlighted={true} />
+                        {rankedPlayers.map((player) => (
+                            <ResultItem key={player.id} name={`Player ${player.id + 1} ${player.score === highestScore ? "(Winner)" : ""}`} value={player.score.toString()} isHighlighted={player.score === highestScore} />
+                        ))}
                     </div>
                     <div className="flex flex-col gap-4">
                         <ResultBtn text="menu" />

@@ -1,6 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useGame } from '../contexts/useGame';
-import { useNavigate } from 'react-router';
 import { useTimer } from './useTimer';
 
 export const useGameLogic = () => {
@@ -10,19 +9,10 @@ export const useGameLogic = () => {
 
     const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
     const [isResolving, setIsResolving] = useState(false);
-    const timeElapsed = useTimer(); 
-
-    const isGameOver = cards.length > 0 && cards.every(c => c.isMatched);
     
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (isGameOver) {
-            setTimeout(() => {
-                navigate("/result");
-            }, 800);
-        }
-    }, [isGameOver, navigate]);
+    const isGameOver = cards.length > 0 && cards.every(c => c.isMatched);
+    const timeElapsed = useTimer(isGameOver); 
+    
 
     const dispatchFlipCard = useCallback((cardId: number, isFlipped: boolean) => {
          const updatedCards = cards.map(card => 
@@ -114,5 +104,6 @@ export const useGameLogic = () => {
         handleCardClick,
         isResolving, 
         timeElapsed,
+        isGameOver,
     };
 };
