@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useGame } from '../contexts/useGame';
+import { useNavigate } from 'react-router';
 import { useTimer } from './useTimer';
 
 export const useGameLogic = () => {
@@ -12,6 +13,26 @@ export const useGameLogic = () => {
     
     const isGameOver = cards.length > 0 && cards.every(c => c.isMatched);
     const timeElapsed = useTimer(isGameOver); 
+    const navigate = useNavigate();
+
+    const handleRestart = useCallback(() => {
+        dispatch({
+            type: "submitGameForm",
+            gameMeta: gameMeta
+        });
+    }, [dispatch, gameMeta]);
+
+    const handleSetupNewGame = useCallback(() => {
+        dispatch({
+            type: "submitGameForm",
+            gameMeta: {
+                theme: "numbers",
+                playerCount: 1,
+                gridSize: 4,
+            }
+        });
+        navigate("/");
+    }, [dispatch, navigate]);
     
 
     const dispatchFlipCard = useCallback((cardId: number, isFlipped: boolean) => {
@@ -105,5 +126,7 @@ export const useGameLogic = () => {
         isResolving, 
         timeElapsed,
         isGameOver,
+        handleRestart,
+        handleSetupNewGame,
     };
 };

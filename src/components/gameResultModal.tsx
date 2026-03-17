@@ -1,24 +1,30 @@
 import type { JSX } from "react"
 import { useGame } from "../contexts/useGame";
+import { useGameLogic } from "../hooks/useGameLogic";
 
 
 export function ResultItem({ name, value, isHighlighted }: { name: string, value: string, isHighlighted: boolean }): JSX.Element {
     const bgClass = isHighlighted ? "bg-blue-950" : "bg-blue-100";
+    const textClassName = isHighlighted ? "text-grey-100" : "text-blue-400";
+    const textClassValue = isHighlighted ? "text-grey-100" : "text-blue-800";
+
     return (
         <div className={`w-full h-12 flex p-4 justify-between ${bgClass} rounded-[0.3125rem]`}>
-            <h2 className="text-preset-19">{name}</h2>
-            <p className="text-preset-20">{value}</p>
+            <h2 className={`text-preset-19 ${textClassName}`}>{name}</h2>
+            <p className={`text-preset-20 ${textClassValue}`}>{value}</p>
         </div>
     )
 }
 
-export function ResultBtn({ text }: { text: string }): JSX.Element {
+export function ResultBtn({ text, isHighlighted, handleClick }: { text: string, isHighlighted: boolean, handleClick: () => void }): JSX.Element {
+    const bgClass = isHighlighted ? "bg-orange-400" : "bg-blue-100";
+    const textClass = isHighlighted ? "text-grey-50" : "text-blue-800";
     return (
-        <button className="flex justify-center items-center w-full h-12 rounded-[1.625rem] bg-blue-100 hover:bg-orange-400 text-preset-17 hover:text-preset-18">{text}</button>
+        <button className={`flex justify-center items-center w-full h-12 rounded-[1.625rem] ${bgClass} hover:bg-orange-300 ${textClass} text-preset-9`} onClick={handleClick}>{text}</button>
     )
 }
 
-export function ResultContainer(): JSX.Element {
+export function ResultContainer({ handleRestart, handleSetupNewGame }: { handleRestart: () => void, handleSetupNewGame: () => void }): JSX.Element {
     const { gameState } = useGame();
     const { soloMeta, multiplayerMeta } = gameState;
 
@@ -40,8 +46,8 @@ export function ResultContainer(): JSX.Element {
                         <ResultItem name="moves taken" value={soloMeta.movesTaken.toString()} isHighlighted={false} />
                     </div>
                     <div className="flex flex-col gap-4">
-                        <ResultBtn text="menu" />
-                        <ResultBtn text="play again" />
+                        <ResultBtn text="Restart" isHighlighted={true} handleClick={handleRestart} />
+                        <ResultBtn text="Setup New Game" isHighlighted={false} handleClick={handleSetupNewGame} />
                     </div>
                 </div>
             </div>
@@ -64,8 +70,8 @@ export function ResultContainer(): JSX.Element {
                         ))}
                     </div>
                     <div className="flex flex-col gap-4">
-                        <ResultBtn text="menu" />
-                        <ResultBtn text="play again" />
+                        <ResultBtn text="Restart" isHighlighted={true} handleClick={handleRestart} />
+                        <ResultBtn text="Setup New Game" isHighlighted={false} handleClick={handleSetupNewGame} />
                     </div>
                 </div>
             </div>

@@ -10,7 +10,7 @@ import { ResultContainer } from "../components/gameResultModal";
 export function GamePage(): JSX.Element {
     const { gameState } = useGame();
     const { cards } = gameState;
-    const { handleCardClick, timeElapsed, isGameOver } = useGameLogic();
+    const { handleCardClick, timeElapsed, isGameOver, handleRestart, handleSetupNewGame } = useGameLogic();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export function GamePage(): JSX.Element {
             <GameHeaderContainer />
             <GameBoardContainer handleCardClick={handleCardClick} />
             <GameFooterContainer timeElapsed={timeElapsed} />
-            {isGameOver && <ResultContainer />}
+            {isGameOver && <ResultContainer handleRestart={handleRestart} handleSetupNewGame={handleSetupNewGame} />}
         </div>
     )
 }
