@@ -19,7 +19,7 @@ export function ResultBtn({ text, isHighlighted, handleClick }: { text: string, 
     const bgClass = isHighlighted ? "bg-orange-400" : "bg-blue-100";
     const textClass = isHighlighted ? "text-grey-50" : "text-blue-800";
     return (
-        <button className={`flex justify-center items-center w-full h-12 rounded-[1.625rem] ${bgClass} hover:bg-orange-300 ${textClass} text-preset-9`} onClick={handleClick}>{text}</button>
+        <button className={`flex justify-center items-center w-full h-12 rounded-[1.625rem] ${bgClass} hover:btn-hover-preset-1 ${textClass} text-preset-9`} onClick={handleClick}>{text}</button>
     )
 }
 

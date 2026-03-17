@@ -92,7 +92,7 @@ export const useGameLogic = () => {
                     
                     setFlippedIndices([]);
                     setIsResolving(false);
-                }, 1000);
+                }, 700);
 
             } else {
                 setTimeout(() => {
@@ -115,7 +115,7 @@ export const useGameLogic = () => {
                     
                     setFlippedIndices([]);
                     setIsResolving(false);
-                }, 1000); 
+                }, 700); 
             }
         }
     }, [cards, flippedIndices, isResolving, multiplayerMeta, playerCount, timeElapsed, dispatchFlipCard, dispatch]);

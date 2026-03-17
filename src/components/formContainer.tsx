@@ -130,7 +130,7 @@ export function FormContainer(): JSX.Element {
 
                 <button
                     type="submit"
-                    className="border-0 outline-none appearance-none box-border flex items-center justify-center w-full h-600 md:h-[70px] rounded-full bg-orange-400 hover:bg-orange-300 text-preset-9 md:text-preset-5 text-grey-50 text-center cursor-pointer transition-colors duration-150"
+                    className="border-0 outline-none appearance-none box-border flex items-center justify-center w-full h-600 md:h-17.5 rounded-full bg-orange-400 hover:btn-hover-preset-1 text-preset-9 md:text-preset-5 text-grey-50 text-center cursor-pointer transition-colors duration-150"
                 >
                     Start Game
                 </button>
