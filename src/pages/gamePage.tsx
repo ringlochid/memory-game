@@ -32,7 +32,7 @@ export function GamePage(): JSX.Element {
 
     return (
         <div className="flex flex-col items-center justify-between h-screen p-6">
-            <GameHeaderContainer handleOpenMenu={handleOpenMenu} />
+            <GameHeaderContainer handleOpenMenu={handleOpenMenu} handleRestart={handleRestart} handleSetupNewGame={handleSetupNewGame} />
             {isMenuOpen && <MenuContainer handleRestart={() => { handleRestart(); handleCloseMenu(); }} handleSetupNewGame={() => { handleSetupNewGame(); handleCloseMenu(); }} handleResume={handleCloseMenu} />}
 
             <GameBoardContainer handleCardClick={handleCardClick} />

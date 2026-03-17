@@ -85,11 +85,11 @@ export function FormContainer(): JSX.Element {
         navigate("/game");
     };
     return (
-        <main className="flex flex-col items-center justify-center min-h-screen bg-blue-950 p-300">
-            <h1 className="text-preset-5 md:text-preset-4 text-grey-50 mb-600 md:mb-1000">
+        <main className="flex flex-col items-center justify-center min-h-screen bg-blue-950 p-6 md:p-0">
+            <h1 className="text-[24px] md:text-[40px] font-bold tracking-tight text-grey-50 mb-10 md:mb-20">
                 memory
             </h1>
-            <form onSubmit={handleSubmit} className="bg-grey-50 rounded-[10px] md:rounded-[20px] p-300 md:p-700 w-[327px] md:w-[654px] max-w-full flex flex-col gap-300 md:gap-400">
+            <form onSubmit={handleSubmit} className="bg-grey-50 rounded-xl md:rounded-[20px] p-6 md:p-14 w-full max-w-[327px] md:max-w-163.5 flex flex-col gap-6 md:gap-8">
                 <FormSection label="Select Theme">
                     <RadioGroup
                         name="theme"

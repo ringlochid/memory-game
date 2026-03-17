@@ -31,6 +31,17 @@
     --spacing-900: 72px;
     --spacing-1000: 80px;
 
+    /* Responsive Grid Spacing Tokens */
+    --spacing-11-75: 47px;  /* Mobile 6x6 Card Width/Height */
+    --spacing-18: 72.5px;   /* Mobile 4x4 Card Width/Height */
+    --spacing-20-5: 82px;   /* Desktop 6x6 Card Width/Height */
+    --spacing-29-5: 118px;  /* Desktop 4x4 Card Width/Height */
+    
+    --spacing-80-5: 322px;  /* Mobile 6x6 Board Max-Width */
+    --spacing-81-5: 326px;  /* Mobile 4x4 Board Max-Width */
+    --spacing-136: 544px;   /* Desktop 4x4 Board Max-Width */
+    --spacing-143: 572px;   /* Desktop 6x6 Board Max-Width */
+
     /* Animations */
     --animate-fade-in: fade-in 1s var(--animation-delay, 0s) ease forwards;
     --animate-fade-up: fade-up 1s var(--animation-delay, 0s) ease forwards;

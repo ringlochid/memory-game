@@ -10,13 +10,33 @@ export function GameMenuBtn({ handleOpenMenu }: { handleOpenMenu: () => void }):
     )
 }
 
-export function GameHeaderContainer({ handleOpenMenu }: { handleOpenMenu: () => void }): JSX.Element {
+export function GameHeaderContainer({ handleOpenMenu, handleRestart, handleSetupNewGame }: { handleOpenMenu: () => void, handleRestart: () => void, handleSetupNewGame: () => void }): JSX.Element {
     return (
-        <header className="self-stretch flex p-6 justify-between items-center">
-            <h1 className="text-preset-5">
+        <header className="w-full flex pb-10 md:pb-20 justify-between items-center max-w-163.5 lg:max-w-277.5 mx-auto">
+            <h1 className="text-[24px] md:text-preset-4 text-blue-950 font-bold tracking-tight">
                 memory
             </h1>
-            <GameMenuBtn handleOpenMenu={handleOpenMenu} />
+            
+            {/* Mobile Menu Button */}
+            <div className="block md:hidden">
+                <GameMenuBtn handleOpenMenu={handleOpenMenu} />
+            </div>
+
+            {/* Desktop Action Buttons */}
+            <div className="hidden md:flex gap-4">
+                <button 
+                  onClick={handleRestart}
+                  className="w-31.75 h-13 rounded-[26px] bg-orange-400 hover:btn-hover-preset-1 text-grey-50 text-[20px] font-bold cursor-pointer transition-colors"
+                >
+                    Restart
+                </button>
+                <button 
+                  onClick={handleSetupNewGame}
+                  className="w-37.25 h-13 rounded-[26px] bg-blue-100 hover:bg-blue-350 hover:text-grey-50 text-blue-800 text-[20px] font-bold cursor-pointer transition-colors"
+                >
+                    New Game
+                </button>
+            </div>
         </header>
     )
 }
