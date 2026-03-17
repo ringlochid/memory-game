@@ -77,7 +77,7 @@ export function FormContainer(): JSX.Element {
         setGameSettings({ ...gameSettings, playerCount: Number(e.target.value) });
     };
     const handleGridSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setGameSettings({ ...gameSettings, gridSize: Number(e.target.value) });
+        setGameSettings({ ...gameSettings, gridSize: Number(e.target.value) as 4 | 6 });
     };
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
