@@ -1,40 +1,27 @@
 import type { CardMeta, GameContextType, GameMeta, GameState, MultiplayerMeta, SoloMeta, PlayerMeta } from "../contexts/gameContext";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { GameContext } from "../contexts/gameContext";
 import { getRandomIcons } from "../utils/icons";
-import { useNavigate } from "react-router";
 
 export interface SubmitGameFormProps {
     type: "submitGameForm";
     gameMeta: GameMeta;
 }
 
-export interface SubmitCardProps {
-    type: "submitCard";
+export interface SubmitTurnProps {
+    type: "submitTurn";
     cards: CardMeta[];
+    movesTakenInc: number; // for solo logic
+    scoreIncPlayerId: number | null; // which player just scored a point
+    nextPlayerId: number | null; // pass if turn advances
 }
 
-export interface SubmitMoveProps {
-    type: "submitMove";
-    gameType: "solo" | "multiplayer";
-    playerId: number | null;
+export interface SubmitTimeUpdateProps {
+    type: "submitTimeUpdate";
+    timeElapsed: number;
 }
 
-export interface SubmitCurrentPlayerIDChangeProps {
-    type: "submitCurrentPlayerIDChange";
-    currentPlayerID: number;
-}
-
-export interface SubmitScoreUpdateProps {
-    type: "submitScoreUpdate";
-    playerId: number;
-}
-
-export interface SubmitGameOverProps {
-    type: "submitGameOver";
-}
-
-export type GameAction = SubmitGameFormProps | SubmitCardProps | SubmitMoveProps | SubmitCurrentPlayerIDChangeProps | SubmitScoreUpdateProps | SubmitGameOverProps;
+export type GameAction = SubmitGameFormProps | SubmitTurnProps | SubmitTimeUpdateProps;
 
 function initializeCards(gameMeta: GameMeta): CardMeta[] {
     const totalCards = gameMeta.gridSize * gameMeta.gridSize;
@@ -78,13 +65,10 @@ function initializeMultiplayerMeta(gameMeta: GameMeta): MultiplayerMeta {
         players.push({
             id: i,
             score: 0,
-            rank: 1,
-            moves: 0,
         });
     }
     return {
         players,
-        maxScore: 0,
         currentPlayerID: 0,
     };
 }
@@ -104,31 +88,28 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
                 };
             }
 
-            case "submitCard":
-                return { ...state, cards: action.cards };
-
-            case "submitMove": {
-                if (action.gameType === "solo") {
-                    if (!state.soloMeta) return state;
-                    return { ...state, soloMeta: { ...state.soloMeta, movesTaken: state.soloMeta.movesTaken + 1 } };
-                } else {
-                    if (!state.multiplayerMeta) return state;
-                    return { ...state, multiplayerMeta: { ...state.multiplayerMeta, players: state.multiplayerMeta.players.map((player) => player.id === action.playerId ? { ...player, moves: player.moves + 1 } : player) } };
-                }
+            case "submitTurn": {
+                return {
+                    ...state,
+                    cards: action.cards,
+                    soloMeta: state.soloMeta
+                        ? { ...state.soloMeta, movesTaken: state.soloMeta.movesTaken + action.movesTakenInc }
+                        : null,
+                    multiplayerMeta: state.multiplayerMeta
+                        ? {
+                            ...state.multiplayerMeta,
+                            currentPlayerID: action.nextPlayerId !== null ? action.nextPlayerId : state.multiplayerMeta.currentPlayerID,
+                            players: state.multiplayerMeta.players.map((player) =>
+                                player.id === action.scoreIncPlayerId ? { ...player, score: player.score + 1 } : player
+                            )
+                        }
+                        : null,
+                };
             }
 
-            case "submitCurrentPlayerIDChange": {
-                if (!state.multiplayerMeta) return state;
-                return { ...state, multiplayerMeta: { ...state.multiplayerMeta, currentPlayerID: action.currentPlayerID } };
-            }
-
-            case "submitScoreUpdate": {
-                if (!state.multiplayerMeta) return state;
-                return { ...state, multiplayerMeta: { ...state.multiplayerMeta, players: state.multiplayerMeta.players.map((player) => player.id === action.playerId ? { ...player, score: player.score + 1 } : player) } };
-            }
-
-            case "submitGameOver": {
-                return { ...state, gameMeta: { ...state.gameMeta, isGameOver: true } };
+            case "submitTimeUpdate": {
+                if (!state.soloMeta) return state;
+                return { ...state, soloMeta: { ...state.soloMeta, timeElapsed: action.timeElapsed } };
             }
 
             default:
@@ -141,7 +122,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
             theme: "numbers",
             playerCount: 1,
             gridSize: 4,
-            isGameOver: false,
         },
         soloMeta: null,
         multiplayerMeta: null,

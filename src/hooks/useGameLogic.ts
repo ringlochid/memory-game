@@ -5,20 +5,16 @@ import { useNavigate } from 'react-router';
 export const useGameLogic = () => {
     const { gameState, dispatch } = useGame();
     const { cards, gameMeta, multiplayerMeta } = gameState;
-    const { playerCount, isGameOver } = gameMeta;
+    const { playerCount } = gameMeta;
 
     const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
-    const [matchedIndices, setMatchedIndices] = useState<number[]>([]); // for check game over
     const [isResolving, setIsResolving] = useState(false);
 
+    const isGameOver = cards.length > 0 && cards.every(c => c.isMatched);
+    
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (matchedIndices.length === cards.length && cards.length > 0) {
-            dispatch({ type: "submitGameOver" });
-            console.log("game over");
-        }
-    }, [matchedIndices, cards, dispatch]);
+
 
     useEffect(() => {
         if (isGameOver) {
@@ -28,35 +24,17 @@ export const useGameLogic = () => {
         }
     }, [isGameOver, navigate]);
 
-    const handleCurrentPlayerIDChange = useCallback((currentPlayerID: number) => {
-        dispatch({ type: "submitCurrentPlayerIDChange", currentPlayerID });
-    }, [dispatch]);
-    
-    const handleScoreUpdate = useCallback((playerId: number) => {
-        if (!multiplayerMeta) return;
-        dispatch({ type: "submitScoreUpdate", playerId });
-    }, [multiplayerMeta, dispatch]);
-
-    const handleEndTurn = useCallback((isMatch: boolean) => {
-        if (playerCount === 1) {
-            dispatch({ type: "submitMove", gameType: "solo", playerId: null });
-        } else {
-            if (!multiplayerMeta) return;
-            const currPlayerId = multiplayerMeta.currentPlayerID;
-            const nextPlayerId = (currPlayerId + 1) % playerCount;
-            if (isMatch) {
-                handleScoreUpdate(currPlayerId);
-            }
-            handleCurrentPlayerIDChange(nextPlayerId)
-            dispatch({ type: "submitMove", gameType: "multiplayer", playerId: currPlayerId });
-        }
-    }, [playerCount, multiplayerMeta, handleScoreUpdate, handleCurrentPlayerIDChange, dispatch]);
-
     const dispatchFlipCard = useCallback((cardId: number, isFlipped: boolean) => {
          const updatedCards = cards.map(card => 
             card.id === cardId ? { ...card, isFlipped } : card
         );
-        dispatch({ type: "submitCard", cards: updatedCards });
+        dispatch({ 
+            type: "submitTurn", 
+            cards: updatedCards,
+            movesTakenInc: 0,
+            scoreIncPlayerId: null,
+            nextPlayerId: null,
+        });
     }, [cards, dispatch]);
 
 
@@ -91,36 +69,42 @@ export const useGameLogic = () => {
                         return card; 
                     });
 
-                    const finalSync = matchedCards.map(c => 
-                        (c.id === firstCardId || c.id === secondCardId) 
-                            ? { ...c, isMatched: true, isFlipped: true } 
-                            : c
-                    );
-
-                    setMatchedIndices([...matchedIndices, firstCardId, secondCardId]);
-                    console.log("matchedIndices", matchedIndices);
-
-                    dispatch({ type: "submitCard", cards: finalSync });
-                    handleEndTurn(true);
+                    dispatch({ 
+                        type: "submitTurn", 
+                        cards: matchedCards,
+                        movesTakenInc: 1, // solo move increments on resolution
+                        scoreIncPlayerId: multiplayerMeta ? multiplayerMeta.currentPlayerID : null, // scored a point
+                        nextPlayerId: multiplayerMeta ? multiplayerMeta.currentPlayerID : null // keeps turn
+                    });
+                    
                     setFlippedIndices([]);
                     setIsResolving(false);
                 }, 1000);
 
             } else {
                 setTimeout(() => {
+                    const nextPlayerId = multiplayerMeta ? (multiplayerMeta.currentPlayerID + 1) % playerCount : null;
+
                     const resetCards = cards.map(c => 
                         (c.id === firstCardId || c.id === secondCardId) 
                             ? { ...c, isFlipped: false } 
                             : c
                     );
-                    dispatch({ type: "submitCard", cards: resetCards });
-                    handleEndTurn(false);
+
+                    dispatch({ 
+                        type: "submitTurn", 
+                        cards: resetCards,
+                        movesTakenInc: 1,
+                        scoreIncPlayerId: null, // no point
+                        nextPlayerId // advance turn
+                    });
+                    
                     setFlippedIndices([]);
                     setIsResolving(false);
                 }, 1000); 
             }
         }
-    }, [cards, flippedIndices, isResolving, matchedIndices, dispatchFlipCard, handleEndTurn, dispatch]);
+    }, [cards, flippedIndices, isResolving, multiplayerMeta, playerCount, dispatchFlipCard, dispatch]);
 
 
     return {

@@ -9,7 +9,6 @@ export interface GameMeta {
   theme: Theme;
   playerCount: number;
   gridSize: GridSize;
-  isGameOver: boolean;
 }
 
 export interface SoloMeta {
@@ -20,14 +19,11 @@ export interface SoloMeta {
 export interface PlayerMeta {
   id: number;
   score: number;
-  rank: number;
-  moves: number;
 }
 
 export interface MultiplayerMeta {
   players: PlayerMeta[];
   currentPlayerID: number;
-  maxScore: number;
 }
 
 export interface CardMeta {
