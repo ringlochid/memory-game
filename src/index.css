@@ -157,7 +157,12 @@
 }
 
 @utility btn-hover-preset-1 {
-    background: var(--colors-orange-400, #FDA214);
+    background: var(--colors-orange-300, #FFB84A);
+    color: var(--colors-grey-50, #FCFCFC);
+}
+
+@utility btn-hover-preset-2 {
+    background: var(--colors-blue-350, #6395B8);
     color: var(--colors-grey-50, #FCFCFC);
 }
 

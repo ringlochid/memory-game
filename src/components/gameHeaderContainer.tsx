@@ -32,7 +32,7 @@ export function GameHeaderContainer({ handleOpenMenu, handleRestart, handleSetup
                 </button>
                 <button 
                   onClick={handleSetupNewGame}
-                  className="w-37.25 h-13 rounded-[26px] bg-blue-100 hover:bg-blue-350 hover:text-grey-50 text-blue-800 text-[20px] font-bold cursor-pointer transition-colors"
+                  className="w-37.25 h-13 rounded-[26px] bg-blue-100 hover:btn-hover-preset-2 text-blue-800 text-[20px] font-bold cursor-pointer transition-colors"
                 >
                     New Game
                 </button>
