@@ -53,7 +53,7 @@ export function GameBoardContainer({ handleCardClick }: { handleCardClick: (id: 
     const { gridSize } = gameMeta;
 
     return (
-        <div className={`${GridSizeClass[gridSize]} gap-3 md:gap-4 w-full justify-start items-start max-w-[532px] mx-auto`}>
+        <div className={`${GridSizeClass[gridSize]} gap-3 md:gap-4 w-full justify-start items-start max-w-133 mx-auto`}>
             {cards.map((card) => (
                 <GameCard key={card.id} card={card} handleClick={handleCardClick} />
             ))}

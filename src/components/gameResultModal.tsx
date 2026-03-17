@@ -1,6 +1,5 @@
 import type { JSX } from "react"
 import { useGame } from "../contexts/useGame";
-import { useGameLogic } from "../hooks/useGameLogic";
 
 
 export function ResultItem({ name, value, isHighlighted }: { name: string, value: string, isHighlighted: boolean }): JSX.Element {
