@@ -35,7 +35,7 @@ function RadioGroup({
                     />
                     <label
                         htmlFor={option.id}
-                        className="flex items-center justify-center h-500 md:h-[52px] rounded-full bg-blue-300 hover:bg-blue-350 peer-checked:bg-blue-800 text-preset-11 md:text-preset-6 text-grey-50 text-center whitespace-nowrap cursor-pointer transition-colors duration-150"
+                        className="flex items-center justify-center h-500 md:h-13 rounded-full bg-blue-300 hover:bg-blue-350 peer-checked:bg-blue-800 text-preset-11 md:text-preset-6 text-grey-50 text-center whitespace-nowrap cursor-pointer transition-colors duration-150"
                     >
                         {option.label}
                     </label>
@@ -89,7 +89,7 @@ export function FormContainer(): JSX.Element {
             <h1 className="text-[24px] md:text-[40px] font-bold tracking-tight text-grey-50 mb-10 md:mb-20">
                 memory
             </h1>
-            <form onSubmit={handleSubmit} className="bg-grey-50 rounded-xl md:rounded-[20px] p-6 md:p-14 w-full max-w-[327px] md:max-w-163.5 flex flex-col gap-6 md:gap-8">
+            <form onSubmit={handleSubmit} className="bg-grey-50 rounded-xl md:rounded-[20px] p-6 md:p-14 w-full max-w-81.75 md:max-w-163.5 flex flex-col gap-6 md:gap-8">
                 <FormSection label="Select Theme">
                     <RadioGroup
                         name="theme"

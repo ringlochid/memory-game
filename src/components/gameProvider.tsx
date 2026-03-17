@@ -22,7 +22,11 @@ export interface SubmitTimeUpdateProps {
     timeElapsed: number;
 }
 
-export type GameAction = SubmitGameFormProps | SubmitTurnProps | SubmitTimeUpdateProps;
+export interface SubmitRestartProps {
+    type: "submitRestart";
+}
+
+export type GameAction = SubmitGameFormProps | SubmitTurnProps | SubmitTimeUpdateProps | SubmitRestartProps;
 
 function initializeCards(gameMeta: GameMeta): CardMeta[] {
     const totalCards = gameMeta.gridSize * gameMeta.gridSize;
@@ -84,6 +88,15 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
     const reducer = (state: GameState, action: GameAction) => {
         switch (action.type) {
+
+            case "submitRestart": {
+                return {
+                    ...state,
+                    soloMeta: state.soloMeta ? initializeSoloMeta() : null,
+                    multiplayerMeta: state.multiplayerMeta ? initializeMultiplayerMeta(state.gameMeta) : null,
+                    cards: initializeCards(state.gameMeta),
+                };
+            }
 
             case "submitGameForm": {
                 return {

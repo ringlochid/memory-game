@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useGame } from '../contexts/useGame';
 import { useNavigate } from 'react-router';
 import { useTimer } from './useTimer';
@@ -10,19 +10,36 @@ export const useGameLogic = () => {
 
     const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
     const [isResolving, setIsResolving] = useState(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, []);
+
     const isGameOver = cards.length > 0 && cards.every(c => c.isMatched);
-    const timeElapsed = useTimer(isGameOver); 
+    const {timeElapsed, handleReset} = useTimer(isGameOver); 
     const navigate = useNavigate();
 
     const handleRestart = useCallback(() => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+        setFlippedIndices([]);
+        setIsResolving(false);
+        handleReset();
         dispatch({
-            type: "submitGameForm",
-            gameMeta: gameMeta
+            type: "submitRestart",
         });
-    }, [dispatch, gameMeta]);
+    }, [dispatch, handleReset]);
 
     const handleSetupNewGame = useCallback(() => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
         dispatch({
             type: "submitGameForm",
             gameMeta: {
@@ -72,7 +89,7 @@ export const useGameLogic = () => {
             const secondCard = cards.find(c => c.id === secondCardId);
 
             if (firstCard && secondCard && firstCard.value === secondCard.value) {
-                setTimeout(() => {
+                timeoutRef.current = setTimeout(() => {
                     const matchedCards = cards.map(card => {
                         if (card.isMatched) return card; 
                         if (card.id === firstCardId || card.id === secondCardId) {
@@ -95,7 +112,7 @@ export const useGameLogic = () => {
                 }, 700);
 
             } else {
-                setTimeout(() => {
+                timeoutRef.current = setTimeout(() => {
                     const nextPlayerId = multiplayerMeta ? (multiplayerMeta.currentPlayerID + 1) % playerCount : null;
 
                     const resetCards = cards.map(c => 
