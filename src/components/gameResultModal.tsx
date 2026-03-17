@@ -36,7 +36,7 @@ export function ResultContainer({ handleRestart, handleSetupNewGame }: { handleR
         const formattedSeconds = String(seconds).padStart(2, '0');
         return (
             <div className="fixed inset-0 z-50 grid place-items-center bg-black/50">
-                <div className="z-100 w-81.75 flex flex-col bg-white p-6 gap-6 rounded-[0.625rem]">
+                <div className="z-100 w-81.75 md:w-163.5 flex flex-col bg-white p-6 gap-6 rounded-[0.625rem]">
                     <div className="flex flex-col gap-2">
                         <h1 className="text-preset-21">you did it</h1>
                         <p className="text-preset-22">Game over! Here’s how you got on…</p>

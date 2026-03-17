@@ -8,11 +8,11 @@ export function FooterSection({ name, shortName, value, isHighlighted, isMultipl
 
     return (
         <div className={`relative h-17.5 md:h-900 w-full ${bgClass} rounded-xl md:px-5 flex flex-col md:flex-row items-center md:items-center justify-center md:justify-between transition-colors duration-200`}>
-            {/* Active triangle indicator for desktop multiplayer */}
+            {/* Active triangle indicator for multiplayer */}
             {isMultiplayer && isHighlighted && (
-                <>
-                    <div className="hidden lg:block absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-10 border-r-10 border-b-10 border-transparent border-b-orange-400"></div>
-                </>
+                <svg className="absolute -top-2 lg:-top-5 left-1/2 -translate-x-1/2 w-4 h-2 lg:w-9.75 lg:h-5 text-orange-400 fill-current" viewBox="0 0 16 8" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M0 8L8 0L16 8H0Z"/>
+                </svg>
             )}
 
             <p className={`text-[15px] md:text-[18px] font-bold ${textNameColor}`}>
