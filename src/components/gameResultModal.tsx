@@ -24,13 +24,13 @@ export function ResultBtn({ text, isHighlighted, handleClick }: { text: string, 
     )
 }
 
-export function ResultContainer({ handleRestart, handleSetupNewGame }: { handleRestart: () => void, handleSetupNewGame: () => void }): JSX.Element {
+export function ResultContainer({ timeElapsed, handleRestart, handleSetupNewGame }: { timeElapsed: number, handleRestart: () => void, handleSetupNewGame: () => void }): JSX.Element {
     const { gameState } = useGame();
     const { soloMeta, multiplayerMeta } = gameState;
 
     if (soloMeta) {
-        const minutes = Math.floor(soloMeta.timeElapsed / 60);
-        const seconds = soloMeta.timeElapsed % 60;
+        const minutes = Math.floor(timeElapsed / 60);
+        const seconds = timeElapsed % 60;
 
         const formattedMinutes = String(minutes).padStart(2, '0');
         const formattedSeconds = String(seconds).padStart(2, '0');
@@ -54,7 +54,7 @@ export function ResultContainer({ handleRestart, handleSetupNewGame }: { handleR
         )
     }
     if (multiplayerMeta) {
-        const rankedPlayers = multiplayerMeta.players.sort((a, b) => b.score - a.score);
+        const rankedPlayers = [...multiplayerMeta.players].sort((a, b) => b.score - a.score);
         const highestScore = rankedPlayers[0].score;
         const winningPlayer = rankedPlayers.filter(player => player.score === highestScore);
         return (

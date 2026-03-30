@@ -11,8 +11,13 @@ export interface GameMeta {
   gridSize: GridSize;
 }
 
+export const DEFAULT_GAME_META: GameMeta = {
+  theme: "numbers",
+  playerCount: 1,
+  gridSize: 4,
+};
+
 export interface SoloMeta {
-  timeElapsed: number;
   movesTaken: number;
 }
 
@@ -39,6 +44,8 @@ export interface GameState {
   soloMeta: SoloMeta | null;
   multiplayerMeta: MultiplayerMeta | null;
   cards: CardMeta[];
+  selectedCardIds: number[];
+  isResolving: boolean;
 }
 
 export interface GameContextType {

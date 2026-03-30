@@ -38,7 +38,7 @@ export function GamePage(): JSX.Element {
             <GameBoardContainer handleCardClick={handleCardClick} />
 
             <GameFooterContainer timeElapsed={timeElapsed} />
-            {isGameOver && <ResultContainer handleRestart={handleRestart} handleSetupNewGame={handleSetupNewGame} />}
+            {isGameOver && <ResultContainer timeElapsed={timeElapsed} handleRestart={handleRestart} handleSetupNewGame={handleSetupNewGame} />}
         </div>
     )
 }

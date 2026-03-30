@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-export function useTimer(isGameOver: boolean) {
+export function useTimer(isPaused: boolean) {
     const [time, setTime] = useState(0);
 
     const handleReset = useCallback(() => {
@@ -8,12 +8,14 @@ export function useTimer(isGameOver: boolean) {
     }, []);
 
     useEffect(() => {
-        if (isGameOver) return;
+        if (isPaused) return;
+
         const interval = setInterval(() => {
             setTime(prevTime => prevTime + 1);
         }, 1000);
+
         return () => clearInterval(interval);
-    }, [time, isGameOver]);
+    }, [isPaused]);
 
     return { timeElapsed: time, handleReset };
 }

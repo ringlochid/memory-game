@@ -1,6 +1,6 @@
 import type { CardMeta, GameContextType, GameMeta, GameState, MultiplayerMeta, SoloMeta, PlayerMeta } from "../contexts/gameContext";
-import { useEffect, useReducer } from "react";
-import { GameContext } from "../contexts/gameContext";
+import { DEFAULT_GAME_META, GameContext } from "../contexts/gameContext";
+import { useReducer } from "react";
 import { getRandomIcons } from "../utils/icons";
 
 export interface SubmitGameFormProps {
@@ -8,25 +8,20 @@ export interface SubmitGameFormProps {
     gameMeta: GameMeta;
 }
 
-export interface SubmitTurnProps {
-    type: "submitTurn";
-    cards: CardMeta[];
-    movesTakenInc: number; // for solo logic
-    timeElapsed: number; // for solo logic
-    scoreIncPlayerId: number | null; // which player just scored a point
-    nextPlayerId: number | null; // pass if turn advances
+export interface FlipCardProps {
+    type: "flipCard";
+    cardId: number;
 }
 
-export interface SubmitTimeUpdateProps {
-    type: "submitTimeUpdate";
-    timeElapsed: number;
+export interface ResolveSelectedCardsProps {
+    type: "resolveSelectedCards";
 }
 
 export interface SubmitRestartProps {
     type: "submitRestart";
 }
 
-export type GameAction = SubmitGameFormProps | SubmitTurnProps | SubmitTimeUpdateProps | SubmitRestartProps;
+export type GameAction = SubmitGameFormProps | FlipCardProps | ResolveSelectedCardsProps | SubmitRestartProps;
 
 function initializeCards(gameMeta: GameMeta): CardMeta[] {
     const totalCards = gameMeta.gridSize * gameMeta.gridSize;
@@ -59,7 +54,6 @@ function initializeCards(gameMeta: GameMeta): CardMeta[] {
 
 function initializeSoloMeta(): SoloMeta {
     return {
-        timeElapsed: 0,
         movesTaken: 0,
     }
 }
@@ -78,74 +72,129 @@ function initializeMultiplayerMeta(gameMeta: GameMeta): MultiplayerMeta {
     };
 }
 
+function createGameState(gameMeta: GameMeta): GameState {
+    return {
+        gameMeta,
+        soloMeta: gameMeta.playerCount === 1 ? initializeSoloMeta() : null,
+        multiplayerMeta: gameMeta.playerCount > 1 ? initializeMultiplayerMeta(gameMeta) : null,
+        cards: initializeCards(gameMeta),
+        selectedCardIds: [],
+        isResolving: false,
+    };
+}
+
+function incrementSoloMoves(soloMeta: SoloMeta | null): SoloMeta | null {
+    if (!soloMeta) return null;
+    return {
+        ...soloMeta,
+        movesTaken: soloMeta.movesTaken + 1,
+    };
+}
+
+function resolveMatchedTurn(state: GameState, selectedCardIds: number[]): GameState {
+    return {
+        ...state,
+        cards: state.cards.map((card) =>
+            selectedCardIds.includes(card.id)
+                ? { ...card, isMatched: true, isFlipped: true }
+                : card
+        ),
+        soloMeta: incrementSoloMoves(state.soloMeta),
+        multiplayerMeta: state.multiplayerMeta
+            ? {
+                ...state.multiplayerMeta,
+                players: state.multiplayerMeta.players.map((player) =>
+                    player.id === state.multiplayerMeta?.currentPlayerID
+                        ? { ...player, score: player.score + 1 }
+                        : player
+                ),
+            }
+            : null,
+        selectedCardIds: [],
+        isResolving: false,
+    };
+}
+
+function resolveMismatchedTurn(state: GameState, selectedCardIds: number[]): GameState {
+    return {
+        ...state,
+        cards: state.cards.map((card) =>
+            selectedCardIds.includes(card.id)
+                ? { ...card, isFlipped: false }
+                : card
+        ),
+        soloMeta: incrementSoloMoves(state.soloMeta),
+        multiplayerMeta: state.multiplayerMeta
+            ? {
+                ...state.multiplayerMeta,
+                currentPlayerID: (state.multiplayerMeta.currentPlayerID + 1) % state.gameMeta.playerCount,
+            }
+            : null,
+        selectedCardIds: [],
+        isResolving: false,
+    };
+}
+
+function reducer(state: GameState, action: GameAction): GameState {
+    switch (action.type) {
+        case "submitRestart": {
+            return createGameState(state.gameMeta);
+        }
+
+        case "submitGameForm": {
+            return createGameState(action.gameMeta);
+        }
+
+        case "flipCard": {
+            if (state.isResolving || state.selectedCardIds.length >= 2) {
+                return state;
+            }
+
+            const targetCard = state.cards.find((card) => card.id === action.cardId);
+            if (!targetCard || targetCard.isFlipped || targetCard.isMatched) {
+                return state;
+            }
+
+            const selectedCardIds = [...state.selectedCardIds, action.cardId];
+
+            return {
+                ...state,
+                cards: state.cards.map((card) =>
+                    card.id === action.cardId ? { ...card, isFlipped: true } : card
+                ),
+                selectedCardIds,
+                isResolving: selectedCardIds.length === 2,
+            };
+        }
+
+        case "resolveSelectedCards": {
+            if (state.selectedCardIds.length !== 2) {
+                return state;
+            }
+
+            const selectedCards = state.cards.filter((card) => state.selectedCardIds.includes(card.id));
+            if (selectedCards.length !== 2) {
+                return {
+                    ...state,
+                    selectedCardIds: [],
+                    isResolving: false,
+                };
+            }
+
+            const isMatch = selectedCards[0].value === selectedCards[1].value;
+
+            return isMatch
+                ? resolveMatchedTurn(state, state.selectedCardIds)
+                : resolveMismatchedTurn(state, state.selectedCardIds);
+        }
+
+        default:
+            throw new Error("unknown action type");
+    }
+}
 
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
-
-    useEffect(() => {
-        console.log("GameProvider MOUNTED");
-        return () => console.log("GameProvider UNMOUNTED");
-    }, []);
-
-    const reducer = (state: GameState, action: GameAction) => {
-        switch (action.type) {
-
-            case "submitRestart": {
-                return {
-                    ...state,
-                    soloMeta: state.soloMeta ? initializeSoloMeta() : null,
-                    multiplayerMeta: state.multiplayerMeta ? initializeMultiplayerMeta(state.gameMeta) : null,
-                    cards: initializeCards(state.gameMeta),
-                };
-            }
-
-            case "submitGameForm": {
-                return {
-                    gameMeta: action.gameMeta,
-                    soloMeta: action.gameMeta.playerCount === 1 ? initializeSoloMeta() : null,
-                    multiplayerMeta: action.gameMeta.playerCount > 1 ? initializeMultiplayerMeta(action.gameMeta) : null,
-                    cards: initializeCards(action.gameMeta),
-                };
-            }
-
-            case "submitTurn": {
-                return {
-                    ...state,
-                    cards: action.cards,
-                    soloMeta: state.soloMeta
-                        ? { ...state.soloMeta, movesTaken: state.soloMeta.movesTaken + action.movesTakenInc, timeElapsed: action.timeElapsed }
-                        : null,
-                    multiplayerMeta: state.multiplayerMeta
-                        ? {
-                            ...state.multiplayerMeta,
-                            currentPlayerID: action.nextPlayerId !== null ? action.nextPlayerId : state.multiplayerMeta.currentPlayerID,
-                            players: state.multiplayerMeta.players.map((player) =>
-                                player.id === action.scoreIncPlayerId ? { ...player, score: player.score + 1 } : player
-                            )
-                        }
-                        : null,
-                };
-            }
-
-            case "submitTimeUpdate": {
-                if (!state.soloMeta) return state;
-                return { ...state, soloMeta: { ...state.soloMeta, timeElapsed: action.timeElapsed } };
-            }
-
-            default:
-                throw new Error("unknown action type");
-        }
-    }
-
-    const [gameState, dispatch] = useReducer(reducer, {
-        gameMeta: {
-            theme: "numbers",
-            playerCount: 1,
-            gridSize: 4,
-        },
-        soloMeta: null,
-        multiplayerMeta: null,
-        cards: [],
-    });
+    const [gameState, dispatch] = useReducer(reducer, createGameState(DEFAULT_GAME_META));
 
     const gameContext: GameContextType = {
         gameState,
